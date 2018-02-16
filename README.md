@@ -1,7 +1,7 @@
 # serverless-image-proxy [![Build Status](https://travis-ci.org/graphcool/serverless-image-proxy.svg?branch=master)](https://travis-ci.org/graphcool/serverless-image-proxy) [![Greenkeeper badge](https://badges.greenkeeper.io/graphcool/serverless-image-proxy.svg)](https://greenkeeper.io/)
 Resizes images using a Lambda function (aka Serverless Thumbor)
 
-> Note: For this to work in a browser you have to add "*/*" to binary Media Types in API Gateway console.
+> Note: For this to work in a browser you have to add `*/*` to binary Media Types in API Gateway console.
 
 ## Notes
 
