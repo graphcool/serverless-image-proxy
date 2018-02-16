@@ -107,7 +107,7 @@ export default callbackRuntime(async (event: APIGatewayEvent) => {
       stream.resize(config.resize.width, config.resize.height)
 
       if (config.resize.force) {
-        stream.ignoreAspectRatio()
+        stream.crop()
       } else {
         stream.max()
       }
