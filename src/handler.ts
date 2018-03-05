@@ -58,7 +58,8 @@ export default callbackRuntime(async (event: APIGatewayEvent) => {
     ContentLength,
     ContentType,
     ContentDisposition,
-    ETag
+    ETag,
+    LastModified
   } = await s3.headObject(options).promise()
 
   if (ContentLength! > 25 * 1024 * 1024) {
@@ -83,7 +84,7 @@ export default callbackRuntime(async (event: APIGatewayEvent) => {
   ) {
     const obj = await s3.getObject(options).promise()
     const body = (obj.Body as Buffer).toString('base64')
-    return base64Response(body, ContentType!, ContentDisposition!, ETag!)
+    return base64Response(body, ContentType!, ContentDisposition!, ETag!, LastModified!)
   }
 
   const s3Resp = await s3.getObject(options).promise()
@@ -126,7 +127,8 @@ export default callbackRuntime(async (event: APIGatewayEvent) => {
     buf.toString('base64'),
     ContentType!,
     ContentDisposition!,
-    ETag!
+    ETag!,
+    LastModified!
   )
 })
 
@@ -134,7 +136,8 @@ function base64Response(
   body: string,
   ContentType: string,
   ContentDisposition: string,
-  ETag: string
+  ETag: string,
+  LastModified: any
 ) {
   return {
     statusCode: 200,
@@ -142,7 +145,8 @@ function base64Response(
       'Content-Type': ContentType,
       'Content-Disposition': ContentDisposition,
       'Cache-Control': 'max-age=31536000',
-      'E-Tag': ETag
+      'ETag': ETag,
+      'Last-Modified': LastModified
     },
     body,
     isBase64Encoded: true,
