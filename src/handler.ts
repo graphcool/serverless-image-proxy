@@ -3,6 +3,7 @@ import { getConfig, parseParams, Params } from './parser'
 import { callbackRuntime } from 'lambda-helpers'
 import { APIGatewayEvent, ProxyResult } from 'aws-lambda'
 import { GraphQLClient } from 'graphql-request'
+const etag = require('etag')
 const sharp = require('sharp')
 
 import 'source-map-support/register'
@@ -57,9 +58,7 @@ export default callbackRuntime(async (event: APIGatewayEvent) => {
   const {
     ContentLength,
     ContentType,
-    ContentDisposition,
-    ETag,
-    LastModified
+    ContentDisposition
   } = await s3.headObject(options).promise()
 
   if (ContentLength! > 25 * 1024 * 1024) {
@@ -84,7 +83,7 @@ export default callbackRuntime(async (event: APIGatewayEvent) => {
   ) {
     const obj = await s3.getObject(options).promise()
     const body = (obj.Body as Buffer).toString('base64')
-    return base64Response(body, ContentType!, ContentDisposition!, ETag!, LastModified!)
+    return base64Response(body, ContentType!, ContentDisposition!)
   }
 
   const s3Resp = await s3.getObject(options).promise()
@@ -126,18 +125,14 @@ export default callbackRuntime(async (event: APIGatewayEvent) => {
   return base64Response(
     buf.toString('base64'),
     ContentType!,
-    ContentDisposition!,
-    ETag!,
-    LastModified!
+    ContentDisposition!
   )
 })
 
 function base64Response(
   body: string,
   ContentType: string,
-  ContentDisposition: string,
-  ETag: string,
-  LastModified: any
+  ContentDisposition: string
 ) {
   return {
     statusCode: 200,
@@ -145,8 +140,7 @@ function base64Response(
       'Content-Type': ContentType,
       'Content-Disposition': ContentDisposition,
       'Cache-Control': 'max-age=31536000',
-      'ETag': ETag,
-      'Last-Modified': LastModified
+      'ETag': etag(body)
     },
     body,
     isBase64Encoded: true,

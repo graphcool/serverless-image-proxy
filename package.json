@@ -12,19 +12,21 @@
   },
   "devDependencies": {
     "@types/aws-lambda": "0.0.23",
+    "@types/etag": "1.8.0",
     "@types/node": "8.5.2",
     "ava": "0.23.0",
     "husky": "0.14.3",
     "lint-staged": "6.0.0",
     "prettier": "1.9.2",
-    "serverless-plugin-typescript": "1.1.5",
-    "serverless-apigwy-binary": "0.1.0"
+    "serverless-apigwy-binary": "0.1.0",
+    "serverless-plugin-typescript": "1.1.5"
   },
   "dependencies": {
     "aws-sdk": "2.176.0",
     "graphql-request": "1.4.1",
     "lambda-helpers": "0.2.2",
     "sharp": "0.18.4",
-    "source-map-support": "0.5.0"
+    "source-map-support": "0.5.0",
+    "etag": "1.8.1"
   }
 }
