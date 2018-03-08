@@ -39,6 +39,7 @@ export default callbackRuntime(async (event: APIGatewayEvent) => {
     }
   }
 
+  const headerETag = event.headers['If-None-Match']
   const [paramsErr, params] = parseParams(event.path)
 
   if (paramsErr) {
@@ -83,7 +84,7 @@ export default callbackRuntime(async (event: APIGatewayEvent) => {
   ) {
     const obj = await s3.getObject(options).promise()
     const body = (obj.Body as Buffer).toString('base64')
-    return base64Response(body, ContentType!, ContentDisposition!)
+    return base64Response(body, ContentType!, ContentDisposition!, headerETag!)
   }
 
   const s3Resp = await s3.getObject(options).promise()
@@ -125,23 +126,35 @@ export default callbackRuntime(async (event: APIGatewayEvent) => {
   return base64Response(
     buf.toString('base64'),
     ContentType!,
-    ContentDisposition!
+    ContentDisposition!,
+    headerETag!
   )
 })
 
 function base64Response(
   body: string,
   ContentType: string,
-  ContentDisposition: string
+  ContentDisposition: string,
+  headerETag: string
 ) {
+  const bodyETag = etag(body);
+  const headers = {
+    'Content-Type': ContentType,
+    'Content-Disposition': ContentDisposition,
+    'Cache-Control': 'max-age=31536000',
+    'ETag': bodyETag
+  };
+
+  if(headerETag && bodyETag){
+    return {
+      statusCode: 304,
+      headers: headers
+    }
+  }
+
   return {
     statusCode: 200,
-    headers: {
-      'Content-Type': ContentType,
-      'Content-Disposition': ContentDisposition,
-      'Cache-Control': 'max-age=31536000',
-      'ETag': etag(body)
-    },
+    headers: headers,
     body,
     isBase64Encoded: true,
   }
