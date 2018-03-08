@@ -145,7 +145,7 @@ function base64Response(
     'ETag': bodyETag
   };
 
-  if(headerETag && bodyETag){
+  if(headerETag && headerETag === bodyETag){
     return {
       statusCode: 304,
       headers: headers
