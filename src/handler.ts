@@ -3,6 +3,7 @@ import { getConfig, parseParams, Params } from './parser'
 import { callbackRuntime } from 'lambda-helpers'
 import { APIGatewayEvent, ProxyResult } from 'aws-lambda'
 import { GraphQLClient } from 'graphql-request'
+const etag = require('etag')
 const sharp = require('sharp')
 
 import 'source-map-support/register'
@@ -38,6 +39,7 @@ export default callbackRuntime(async (event: APIGatewayEvent) => {
     }
   }
 
+  const headerETag = event.headers['If-None-Match']
   const [paramsErr, params] = parseParams(event.path)
 
   if (paramsErr) {
@@ -57,7 +59,7 @@ export default callbackRuntime(async (event: APIGatewayEvent) => {
   const {
     ContentLength,
     ContentType,
-    ContentDisposition,
+    ContentDisposition
   } = await s3.headObject(options).promise()
 
   if (ContentLength! > 25 * 1024 * 1024) {
@@ -82,7 +84,7 @@ export default callbackRuntime(async (event: APIGatewayEvent) => {
   ) {
     const obj = await s3.getObject(options).promise()
     const body = (obj.Body as Buffer).toString('base64')
-    return base64Response(body, ContentType!, ContentDisposition!)
+    return base64Response(body, ContentType!, ContentDisposition!, headerETag!)
   }
 
   const s3Resp = await s3.getObject(options).promise()
@@ -125,6 +127,7 @@ export default callbackRuntime(async (event: APIGatewayEvent) => {
     buf.toString('base64'),
     ContentType!,
     ContentDisposition!,
+    headerETag!
   )
 })
 
@@ -132,14 +135,26 @@ function base64Response(
   body: string,
   ContentType: string,
   ContentDisposition: string,
+  headerETag: string
 ) {
+  const bodyETag = etag(body);
+  const headers = {
+    'Content-Type': ContentType,
+    'Content-Disposition': ContentDisposition,
+    'Cache-Control': 'max-age=31536000',
+    'ETag': bodyETag
+  };
+
+  if(headerETag && headerETag === bodyETag){
+    return {
+      statusCode: 304,
+      headers: headers
+    }
+  }
+
   return {
     statusCode: 200,
-    headers: {
-      'Content-Type': ContentType,
-      'Content-Disposition': ContentDisposition,
-      'Cache-Control': 'max-age=31536000',
-    },
+    headers: headers,
     body,
     isBase64Encoded: true,
   }
