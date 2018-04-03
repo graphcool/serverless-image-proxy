@@ -2,6 +2,6 @@ version: "2"
 services:
 
   serverless:
-    image: lambci/lambda:build-nodejs6.10
+    image: lambci/lambda:build-nodejs6.10@sha256:565dae2490403879241da5ffe4d62f620911a864efc64205b30992f0eefeefc4
     volumes:
     - .:/var/task
