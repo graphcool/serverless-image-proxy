@@ -44,9 +44,9 @@
   dependencies:
     arrify "^1.0.1"
 
-"@types/aws-lambda@0.0.23":
-  version "0.0.23"
-  resolved "https://registry.yarnpkg.com/@types/aws-lambda/-/aws-lambda-0.0.23.tgz#a45476fe1847eeae7cc7676a790c47acb49cfd3b"
+"@types/aws-lambda@8.10.19":
+  version "8.10.19"
+  resolved "https://registry.yarnpkg.com/@types/aws-lambda/-/aws-lambda-8.10.19.tgz#913a8016a4599d262960d97cb11faf7e963ec0e1"
 
 "@types/node@8.5.2":
   version "8.5.2"
