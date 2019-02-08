@@ -48,9 +48,9 @@
   version "0.0.23"
   resolved "https://registry.yarnpkg.com/@types/aws-lambda/-/aws-lambda-0.0.23.tgz#a45476fe1847eeae7cc7676a790c47acb49cfd3b"
 
-"@types/node@8.5.2":
-  version "8.5.2"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-8.5.2.tgz#83b8103fa9a2c2e83d78f701a9aa7c9539739aa5"
+"@types/node@8.10.40":
+  version "8.10.40"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-8.10.40.tgz#4314888d5cd537945d73e9ce165c04cc550144a4"
 
 abbrev@1:
   version "1.1.0"
